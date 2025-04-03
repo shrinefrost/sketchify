@@ -17,7 +17,7 @@ public class Server {
 
         // Initialize database connection
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/scribble_db", "root", "Suraj2#pandey");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/scribble_db", "root", "Shru2003");
             System.out.println("✅ Database connected!");
         } catch (SQLException e) {
             System.err.println("❌ Database connection failed: " + e.getMessage());
@@ -108,22 +108,46 @@ public class Server {
     }
 
     // ✅ Selects a new drawer randomly
+//    private static void selectNewDrawer() {
+//        if (clients.isEmpty()) return;
+//
+//        Random rand = new Random();
+//        ClientHandler newDrawer = clients.get(rand.nextInt(clients.size()));
+//
+//        drawer = newDrawer;
+//        broadcastMessage("CHAT:🖌️ " + drawer.getUsername() + " is the new drawer!");
+//
+//        // Send word selection to new drawer
+//        List<String> words = getRandomWords();
+//        if (!words.isEmpty()) {
+//            drawer.sendMessage("ROLE:DRAWER");
+//            drawer.sendMessage("WORD_SELECTION:" + String.join(",", words));
+//        }
+//    }
     private static void selectNewDrawer() {
         if (clients.isEmpty()) return;
 
+        // ✅ Reset previous drawer to guesser
+        if (drawer != null) {
+            drawer.sendMessage("ROLE:GUESSER");
+        }
+
+        // ✅ Select a new random drawer
         Random rand = new Random();
         ClientHandler newDrawer = clients.get(rand.nextInt(clients.size()));
 
+        // ✅ Update drawer reference
         drawer = newDrawer;
         broadcastMessage("CHAT:🖌️ " + drawer.getUsername() + " is the new drawer!");
 
-        // Send word selection to new drawer
+        // ✅ Send word selection only to the new drawer
         List<String> words = getRandomWords();
         if (!words.isEmpty()) {
             drawer.sendMessage("ROLE:DRAWER");
             drawer.sendMessage("WORD_SELECTION:" + String.join(",", words));
         }
     }
+
 
     // ✅ Remove disconnected clients safely
     public static void removeClient(ClientHandler client) {
